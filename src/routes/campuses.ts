@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 const prisma = new PrismaClient();
+
 // GET /campuses
 router.get('/', async (req, res, next) => {
   try {
