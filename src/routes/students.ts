@@ -52,8 +52,14 @@ router.post('/', async (req, res, next) => {
             return res.status(400).json({error: "Invalid email format"
             });
         }
-        if (gpa !== undefined && (gpa < 0 || gpa > 4)) {
-            return res.status(400).json({ error: "gpa must be between 0 and 4" });
+        const parsedGpa = Number(gpa);
+        if (
+            gpa !== undefined &&
+            (Number.isNaN(parsedGpa) || parsedGpa < 0 || parsedGpa > 4)
+        ) {
+            return res.status(400).json({
+                error: "gpa must be between 0 and 4"
+            });
         }
         const student = await prisma.student.create({
             data: {
@@ -61,7 +67,7 @@ router.post('/', async (req, res, next) => {
                 lastName,
                 email,
                 imageUrl,
-                gpa: gpa !== undefined ? Number(gpa) : 0.0,
+                gpa: gpa !== undefined ? parsedGpa : 0.0,
                 campusId: campusId ? Number(campusId) : null
             }
         });
@@ -82,9 +88,15 @@ router.put('/:id', async (req, res, next) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ error: 'Invalid email format' });
     }
-    if (gpa !== undefined && (gpa < 0 || gpa > 4)) {
-      return res.status(400).json({ error: 'gpa must be between 0 and 4' });
-    }
+    const parsedGpa = Number(gpa);
+        if (
+            gpa !== undefined &&
+            (Number.isNaN(parsedGpa) || parsedGpa < 0 || parsedGpa > 4)
+        ) {
+            return res.status(400).json({
+                error: "gpa must be between 0 and 4"
+            });
+        }
     const id = Number(req.params.id);
     if (Number.isNaN(id)) {
             return res.status(400).json({
@@ -98,7 +110,7 @@ router.put('/:id', async (req, res, next) => {
         lastName,
         email,
         imageUrl,
-        gpa: gpa !== undefined ? Number(gpa) : 0.0,
+        gpa: gpa !== undefined ? parsedGpa : 0.0,
         campusId: campusId ? Number(campusId) : null
       }
     });
@@ -118,7 +130,7 @@ router.delete('/:id', async (req, res, next) => {
             });
         }
     await prisma.student.delete({
-      where: { id: Number(req.params.id) }
+      where: { id }
     });
     res.status(204).send();
   } catch (err) {
