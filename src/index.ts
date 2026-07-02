@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import campusRoutes from './routes/campuses';
-
+import errorHandler from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -15,6 +15,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/campuses', campusRoutes);
-
+app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
